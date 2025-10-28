@@ -1,82 +1,87 @@
 import streamlit as st
-import math
 
-# ---- Page Config ----
-st.set_page_config(page_title="Advanced Calculator", page_icon="🧮", layout="centered")
+# --- Page Configuration ---
+st.set_page_config(page_title="Digital Calculator", page_icon="🧮", layout="centered")
 
-# ---- App Title ----
-st.title("🧮 Advanced Calculator")
-st.caption("A smart calculator built using Streamlit with theme toggle and history log")
+st.markdown("""
+<style>
+.calculator {
+    max-width: 300px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 20px;
+    background: #1E1E1E;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    color: white;
+}
+.display {
+    background: #333;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: right;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    word-wrap: break-word;
+}
+.button {
+    background: #444;
+    border: none;
+    color: white;
+    font-size: 20px;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.button:hover {
+    background: #666;
+}
+.clear {
+    background: #D32F2F;
+}
+.equals {
+    background: #1976D2;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# ---- Sidebar Theme Toggle ----
-theme = st.sidebar.radio("🌗 Choose Theme", ["Light", "Dark"])
+# --- App Title ---
+st.title("🧮 Digital Calculator")
+st.write("A fully interactive calculator built with Streamlit")
 
-if theme == "Dark":
-    st.markdown(
-        """
-        <style>
-        body {background-color: #111; color: #EEE;}
-        .stButton>button {background-color: #222; color: white;}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+# --- Session State for Display ---
+if "expression" not in st.session_state:
+    st.session_state.expression = ""
 
-# ---- Session State for History ----
-if "history" not in st.session_state:
-    st.session_state.history = []
+# --- Display Screen ---
+st.markdown(f"<div class='calculator'><div class='display'>{st.session_state.expression}</div>", unsafe_allow_html=True)
 
-# ---- Input Fields ----
-col1, col2 = st.columns(2)
-with col1:
-    num1 = st.number_input("Enter first number:", value=0.0)
-with col2:
-    num2 = st.number_input("Enter second number:", value=0.0)
+# --- Button Layout ---
+buttons = [
+    ["7", "8", "9", "/"],
+    ["4", "5", "6", "*"],
+    ["1", "2", "3", "-"],
+    ["0", ".", "=", "+"],
+    ["C"]
+]
 
-# ---- Operation Selection ----
-operation = st.selectbox(
-    "Select Operation",
-    ["Addition", "Subtraction", "Multiplication", "Division", "Power (xⁿ)", "Modulus (%)", "Square Root (√x)"]
-)
+# --- Button Logic ---
+for row in buttons:
+    cols = st.columns(len(row))
+    for i, char in enumerate(row):
+        if cols[i].button(char, key=f"{char}_{i}", use_container_width=True):
+            if char == "C":
+                st.session_state.expression = ""
+            elif char == "=":
+                try:
+                    st.session_state.expression = str(eval(st.session_state.expression))
+                except Exception:
+                    st.session_state.expression = "Error"
+            else:
+                st.session_state.expression += char
 
-# ---- Calculation Logic ----
-result = None
-if st.button("Calculate"):
-    try:
-        if operation == "Addition":
-            result = num1 + num2
-        elif operation == "Subtraction":
-            result = num1 - num2
-        elif operation == "Multiplication":
-            result = num1 * num2
-        elif operation == "Division":
-            result = num1 / num2 if num2 != 0 else "Error (Divide by Zero)"
-        elif operation == "Power (xⁿ)":
-            result = math.pow(num1, num2)
-        elif operation == "Modulus (%)":
-            result = num1 % num2 if num2 != 0 else "Error (Divide by Zero)"
-        elif operation == "Square Root (√x)":
-            result = math.sqrt(num1)
-        
-        # Save to history
-        st.session_state.history.append(f"{operation}: {result}")
-    except Exception as e:
-        st.error(f"Error: {e}")
+# --- Close Container ---
+st.markdown("</div>", unsafe_allow_html=True)
 
-# ---- Display Result ----
-if result is not None:
-    st.success(f"✅ Result: {result}")
-
-# ---- History Log ----
-st.subheader("🧾 Calculation History")
-if len(st.session_state.history) > 0:
-    for i, entry in enumerate(reversed(st.session_state.history[-5:]), 1):
-        st.write(f"{i}. {entry}")
-else:
-    st.info("No calculations yet!")
-
-# ---- Clear History ----
-if st.button("🧹 Clear History"):
-    st.session_state.history.clear()
-    st.success("History cleared!")
 
