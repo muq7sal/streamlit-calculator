@@ -4,7 +4,7 @@ import math
 # --- Page Configuration ---
 st.set_page_config(page_title="Scientific Calculator", page_icon="🧮", layout="centered")
 
-# --- Hide Default Streamlit UI Elements (Sidebar, Menu, Footer) ---
+# --- Hide Streamlit UI Elements (Sidebar, Menu, Footer) ---
 hide_st_style = """
 <style>
 #MainMenu {visibility: hidden;}
@@ -14,7 +14,7 @@ header {visibility: hidden;}
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# --- Light Theme CSS for Clean Look ---
+# --- Light Theme + One-Line Display CSS ---
 st.markdown("""
 <style>
 .calculator-container {
@@ -29,13 +29,17 @@ st.markdown("""
 .display {
     background: #ffffff;
     border: 1px solid #ddd;
-    padding: 15px;
+    padding: 10px 15px;
     border-radius: 10px;
     text-align: right;
     font-size: 26px;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #222;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 55px;
 }
 .stButton>button {
     width: 100%;
@@ -73,8 +77,10 @@ st.markdown("<h2 style='text-align:center; color:#333;'>🧮 Scientific Calculat
 if "expression" not in st.session_state:
     st.session_state.expression = ""
 
-# --- Display Screen ---
+# --- Calculator Container ---
 st.markdown("<div class='calculator-container'>", unsafe_allow_html=True)
+
+# --- Display Screen (One Line Only) ---
 st.markdown(f"<div class='display'>{st.session_state.expression}</div>", unsafe_allow_html=True)
 
 # --- Button Layout ---
@@ -117,6 +123,7 @@ for row in buttons:
                 st.session_state.expression += char
 
 st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
