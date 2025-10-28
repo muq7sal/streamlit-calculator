@@ -4,56 +4,70 @@ import math
 # --- Page Configuration ---
 st.set_page_config(page_title="Scientific Calculator", page_icon="🧮", layout="centered")
 
-# --- Custom CSS for Beautiful UI ---
+# --- Hide Default Streamlit UI Elements (Sidebar, Menu, Footer) ---
+hide_st_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# --- Light Theme CSS for Clean Look ---
 st.markdown("""
 <style>
 .calculator-container {
-    max-width: 360px;
+    max-width: 380px;
     margin: auto;
-    background: linear-gradient(145deg, #202020, #2c2c2c);
-    padding: 20px;
-    border-radius: 25px;
-    box-shadow: 0px 0px 25px rgba(0,0,0,0.6);
-    color: #fff;
+    background: #f9f9f9;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     font-family: 'Segoe UI', sans-serif;
 }
 .display {
-    background: #111;
+    background: #ffffff;
+    border: 1px solid #ddd;
     padding: 15px;
     border-radius: 10px;
     text-align: right;
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 26px;
+    font-weight: 600;
     margin-bottom: 15px;
-    overflow-x: auto;
+    color: #222;
 }
 .stButton>button {
     width: 100%;
     height: 55px;
     border: none;
-    border-radius: 12px;
-    background: #333;
-    color: white;
+    border-radius: 10px;
+    background: #e0e0e0;
+    color: #111;
     font-size: 20px;
     transition: 0.2s;
+    font-weight: 500;
 }
 .stButton>button:hover {
-    background: #555;
-}
-.clear-btn>button {
-    background: #d32f2f;
+    background: #d6d6d6;
 }
 .equals-btn>button {
-    background: #1976d2;
+    background: #4CAF50;
+    color: white;
+}
+.clear-btn>button {
+    background: #e53935;
+    color: white;
 }
 .func-btn>button {
-    background: #0288d1;
+    background: #1976D2;
+    color: white;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # --- App Title ---
-st.markdown("<h2 style='text-align:center;'>🧮 Scientific Calculator</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align:center; color:#333;'>🧮 Scientific Calculator</h2>", unsafe_allow_html=True)
 
 # --- Session State ---
 if "expression" not in st.session_state:
